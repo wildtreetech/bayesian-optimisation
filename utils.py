@@ -1,5 +1,45 @@
 import numpy as np
 from scipy import stats
+import matplotlib.pyplot as plt
+
+from skopt.acquisition import gaussian_ei
+from skopt.acquisition import gaussian_lcb
+
+
+def plot_optimizer(opt, x, acq_name='EI'):
+    model = opt.models[-1]
+    x_model = opt.space.transform(x.tolist())
+
+    # Plot Model(x) + contours
+    y_pred, sigma = model.predict(x_model, return_std=True)
+    plt.plot(x, y_pred, "g--", label=r"$\mu(x)$")
+    plt.fill(np.concatenate([x, x[::-1]]),
+             #np.concatenate([y_pred - 1.9600 * sigma,
+             #                 (y_pred + 1.9600 * sigma)[::-1]]),
+             np.concatenate([y_pred - sigma,
+                             (y_pred + sigma)[::-1]]),
+             alpha=.2, fc="g", ec="None")
+
+    # Plot sampled points
+    plt.plot(opt.Xi, opt.yi,
+             "ro", label="Observations")
+
+    if acq_name == 'EI':
+        acq = gaussian_ei(x_model, model, y_opt=np.min(opt.yi),
+                          **opt.acq_func_kwargs)
+        acq /= acq.max()
+    elif acq_name == 'LCB':
+        acq = gaussian_lcb(x_model, model, **opt.acq_func_kwargs)
+        acq /= acq.min()
+
+    # shift down to make a better plot
+    acq = acq - 2
+    plt.plot(x, acq, "b", label="%s(x)" % acq_name)
+    plt.fill_between(x.ravel(), -2.0, acq.ravel(), alpha=0.3, color='blue')
+
+    # Adjust plot layout
+    plt.grid()
+    plt.legend(loc='best')
 
 
 def midpoint(x):
