@@ -1,0 +1,6 @@
+numpy==1.13.1
+scipy==0.19.1
+scikit-learn==0.19.1
+matplotlib==2.0.2
+scikit-garden
+-e git+git://github.com/scikit-optimize/scikit-optimize@12e0fdc276911cccfb4645abc87991aa96ec19b7#egg=scikit-optimize
