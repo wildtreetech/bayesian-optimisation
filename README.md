@@ -19,7 +19,7 @@ Follow along with these notebooks:
 Setup
 =====
 
-You will the following python libraries: `scikit-learn`, `jupyter`,
+You will need the following python libraries: `scikit-learn`, `jupyter`,
 `matplotlib`, `scikit-optimize`* and their dependencies.
 
 To install `scikit-optimize` use:
